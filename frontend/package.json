@@ -1,0 +1,55 @@
+{
+  "name": "portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "World-class dynamic MERN portfolio with MongoDB backend",
+  "dependencies": {
+    "framer-motion": "^11.18.1",
+    "gsap": "^3.13.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-helmet-async": "^2.0.5",
+    "react-icons": "^5.4.0",
+    "react-intersection-observer": "^9.16.0",
+    "react-lazy-load-image-component": "^1.6.3",
+    "react-router-dom": "^7.9.5",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.3",
+    "react-tsparticles": "^2.12.2",
+    "tsparticles": "^3.9.1",
+    "tsparticles-slim": "^2.12.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently \"npm start\" \"npm run server\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
+  },
+  "proxy": "http://localhost:5000"
+}
