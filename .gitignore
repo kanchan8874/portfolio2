@@ -9,13 +9,15 @@ lerna-debug.log*
 # yarn.lock
 # pnpm-lock.yaml
 
-# Environment variables
+# Environment variables - NEVER COMMIT THESE!
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .env*.local
+backend/.env
+frontend/.env
 # Note: env.example files are templates and SHOULD be committed
 
 # Build outputs
