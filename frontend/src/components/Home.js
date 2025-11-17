@@ -24,13 +24,15 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [about, socialsData] = await Promise.all([
+        const [about, socialsData, heroData] = await Promise.all([
           api.getAbout(),
           api.getSocials(),
+          api.getHero(),
         ]);
         setAboutData({
           ...about,
           profileImage: resolveProfileImage(about.profileImage),
+          ...heroData, // Merge hero data for CTA buttons
         });
         setSocials(
           socialsData.filter((social) =>
@@ -39,33 +41,14 @@ const Home = () => {
         );
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Fallback data
+        // Minimal fallback - let API defaults handle it
         setAboutData({
-          name: "Kanchan Kushwaha",
-          title: "Full Stack Developer",
-          tagline: "Creating seamless, scalable web applications",
+          name: "",
+          title: "",
+          tagline: "",
           profileImage: profilePic,
         });
-        setSocials([
-          {
-            platform: "LinkedIn",
-            url: "https://www.linkedin.com/in/kanchan-kushwaha-09476325a/",
-            icon: "FaLinkedin",
-            color: "#0e76a8",
-          },
-          {
-            platform: "GitHub",
-            url: "https://github.com/kanchan8874",
-            icon: "FaGithub",
-            color: "#f0f6fc",
-          },
-          {
-            platform: "Instagram",
-            url: "https://www.instagram.com/k_o_m_a_l_l_l/",
-            icon: "FaInstagram",
-            color: "#E4405F",
-          },
-        ]);
+        setSocials([]);
       } finally {
         setLoading(false);
       }
@@ -191,7 +174,7 @@ const Home = () => {
 
             <motion.h1
               ref={nameRef}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 leading-tight"
+              className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 leading-tight break-words"
               style={{ fontFamily: "'Inter', 'Poppins', sans-serif" }}
             >
               <span className="block bg-gradient-to-r from-white via-primary-100 to-white bg-clip-text text-transparent">
@@ -201,7 +184,7 @@ const Home = () => {
 
             <motion.h2
               ref={titleRef}
-              className="text-2xl md:text-3xl lg:text-4xl font-semibold text-primary-100 dark:text-primary-300 mb-6"
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-primary-100 dark:text-primary-300 mb-6 break-words"
             >
               <span className="bg-gradient-to-r from-primary-200 to-secondary-200 bg-clip-text text-transparent">
                 {aboutData?.title || "Full Stack Developer"}
@@ -212,7 +195,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-lg md:text-xl text-white/90 dark:text-gray-300 mb-8 max-w-xl leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-white/90 dark:text-gray-300 mb-8 max-w-xl leading-relaxed break-words"
             >
               {aboutData?.tagline || "A passionate Full Stack Developer creating seamless, scalable, and user-friendly web applications."}
             </motion.p>
@@ -224,43 +207,51 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="flex flex-wrap gap-4 justify-center md:justify-start mb-8"
             >
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative px-8 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold rounded-xl shadow-2xl overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get In Touch
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    →
-                  </motion.span>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-secondary-500 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </motion.a>
-              
-              <motion.a
-                href="#projects"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-md text-white font-bold rounded-xl border-2 border-white/20 hover:bg-white/20 transition-all duration-300"
-              >
-                View Projects
-              </motion.a>
-
-              {aboutData?.resume && (
+              {aboutData?.primaryCTA && (
                 <motion.a
-                  href={aboutData.resume}
+                  href={aboutData.primaryCTA.link || "#contact"}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold rounded-xl shadow-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all"
+                  aria-label={aboutData.primaryCTA.text || "Get In Touch"}
+                >
+                  <span className="relative z-10 flex items-center gap-2 text-sm sm:text-base">
+                    {aboutData.primaryCTA.text || "Get In Touch"}
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                      aria-hidden="true"
+                    >
+                      →
+                    </motion.span>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-secondary-500 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.a>
+              )}
+              
+              {aboutData?.secondaryCTA && (
+                <motion.a
+                  href={aboutData.secondaryCTA.link || "#projects"}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 sm:px-8 py-3 sm:py-4 bg-white/10 dark:bg-white/5 backdrop-blur-md text-white font-bold rounded-xl border-2 border-white/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 text-sm sm:text-base"
+                  aria-label={aboutData.secondaryCTA.text || "View Projects"}
+                >
+                  {aboutData.secondaryCTA.text || "View Projects"}
+                </motion.a>
+              )}
+
+              {aboutData?.resumeLink && aboutData?.showResumeButton !== false && (
+                <motion.a
+                  href={aboutData.resumeLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-white/10 dark:bg-white/5 backdrop-blur-md text-white font-bold rounded-xl border-2 border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-2"
+                  className="px-6 sm:px-8 py-3 sm:py-4 bg-white/10 dark:bg-white/5 backdrop-blur-md text-white font-bold rounded-xl border-2 border-white/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 flex items-center gap-2 text-sm sm:text-base"
+                  aria-label="Download Resume"
                 >
-                  <FaDownload />
+                  <FaDownload aria-hidden="true" />
                   Resume
                 </motion.a>
               )}
@@ -337,9 +328,11 @@ const Home = () => {
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary-400 via-secondary-400 to-primary-400 rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-opacity animate-spin-slow"></div>
                 <img
                 src={aboutData?.profileImage || profilePic}
-                alt={aboutData?.name || "Profile"}
-                className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full object-cover border-4 border-white/30 dark:border-white/20 shadow-2xl ring-4 ring-primary-500/20 dark:ring-primary-500/10"
+                alt={`${aboutData?.name || "Kanchan Kushwaha"} profile`}
+                className="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full object-cover border-4 border-white/30 dark:border-white/20 shadow-2xl ring-4 ring-primary-500/20 dark:ring-primary-500/10"
                 loading="eager"
+                width="384"
+                height="384"
               />
               </div>
 
@@ -367,14 +360,16 @@ const Home = () => {
             href="#about"
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2 text-white/80 hover:text-white group"
+            className="flex flex-col items-center gap-2 text-white/80 hover:text-white group focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2"
+            aria-label="Scroll to About section"
           >
-            <span className="text-sm font-medium">Scroll</span>
+            <span className="text-xs sm:text-sm font-medium">Scroll</span>
             <motion.div
               animate={{ y: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              aria-hidden="true"
             >
-              <FaArrowDown size={24} />
+              <FaArrowDown size={20} className="sm:w-6 sm:h-6" />
             </motion.div>
           </motion.a>
         </motion.div>

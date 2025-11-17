@@ -7,7 +7,6 @@ import {
   FaCss3Alt,
   FaJs,
   FaGitAlt,
-  FaPython,
 } from "react-icons/fa";
 import { SiMongodb, SiTailwindcss, SiExpress, SiNextdotjs, SiTypescript } from "react-icons/si";
 import { useInView } from "react-intersection-observer";
@@ -29,20 +28,8 @@ const Skills = () => {
         setSkills(data);
       } catch (error) {
         console.error("Error fetching skills:", error);
-        // Fallback skills
-        setSkills([
-          { name: "React.js", icon: "FaReact", color: "#61DAFB", category: "frontend", proficiency: 90 },
-          { name: "Node.js", icon: "FaNodeJs", color: "#339933", category: "backend", proficiency: 85 },
-          { name: "MongoDB", icon: "SiMongodb", color: "#47A248", category: "database", proficiency: 80 },
-          { name: "Express.js", icon: "SiExpress", color: "#000000", category: "backend", proficiency: 85 },
-          { name: "JavaScript", icon: "FaJs", color: "#F7DF1E", category: "frontend", proficiency: 91 },
-          { name: "HTML5", icon: "FaHtml5", color: "#E34F26", category: "frontend", proficiency: 95 },
-          { name: "CSS3", icon: "FaCss3Alt", color: "#1572B6", category: "frontend", proficiency: 90 },
-          { name: "Tailwind CSS", icon: "SiTailwindcss", color: "#06B6D4", category: "frontend", proficiency: 88 },
-          { name: "Git & GitHub", icon: "FaGitAlt", color: "#F05032", category: "tools", proficiency: 85 },
-          { name: "TypeScript", icon: "SiTypescript", color: "#3178C6", category: "frontend", proficiency: 75 },
-          { name: "Next.js", icon: "SiNextdotjs", color: "#000000", category: "frontend", proficiency: 80 },
-        ]);
+        // Minimal fallback - let API defaults handle it
+        setSkills([]);
       } finally {
         setLoading(false);
       }
@@ -57,7 +44,6 @@ const Skills = () => {
     FaCss3Alt,
     FaJs,
     FaGitAlt,
-    FaPython,
     SiMongodb,
     SiTailwindcss,
     SiExpress,
@@ -127,7 +113,7 @@ const Skills = () => {
         
         {/* Icon */}
         <motion.div
-          className="text-6xl mb-4 relative z-10"
+          className="text-4xl sm:text-5xl md:text-6xl mb-4 relative z-10"
           style={{ color: skill.color || "#3b82f6" }}
           whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
           transition={{ duration: 0.5 }}
@@ -136,7 +122,7 @@ const Skills = () => {
         </motion.div>
         
         {/* Skill Name */}
-        <h3 className="text-lg font-bold text-center mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors relative z-10">
+        <h3 className="text-base sm:text-lg font-bold text-center mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors relative z-10 break-words">
           {skill.name}
         </h3>
         
@@ -249,7 +235,7 @@ const Skills = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 px-4 sm:px-0"
         >
           {filteredSkills.map((skill, index) => (
             <SkillCard key={index} skill={skill} index={index} />

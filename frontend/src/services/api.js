@@ -65,6 +65,26 @@ class ApiService {
     return this.fetch(`/skills/category/${category}`);
   }
 
+  async createSkill(data) {
+    return this.fetch('/skills', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateSkill(id, data) {
+    return this.fetch(`/skills/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteSkill(id) {
+    return this.fetch(`/skills/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // About
   async getAbout() {
     return this.fetch('/about');
@@ -73,6 +93,26 @@ class ApiService {
   // Socials
   async getSocials() {
     return this.fetch('/socials');
+  }
+
+  async createSocial(data) {
+    return this.fetch('/socials', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateSocial(id, data) {
+    return this.fetch(`/socials/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteSocial(id) {
+    return this.fetch(`/socials/${id}`, {
+      method: 'DELETE',
+    });
   }
 
   // Testimonials
@@ -84,10 +124,62 @@ class ApiService {
     return this.fetch('/testimonials/featured');
   }
 
+  async createTestimonial(data) {
+    return this.fetch('/testimonials', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTestimonial(id, data) {
+    return this.fetch(`/testimonials/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTestimonial(id) {
+    return this.fetch(`/testimonials/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Contact
   async sendContactMessage(data) {
     return this.fetch('/contact', {
       method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Hero Section
+  async getHero() {
+    return this.fetch('/hero');
+  }
+
+  async updateHero(data) {
+    return this.fetch('/hero', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Contact Info
+  async getContactInfo() {
+    return this.fetch('/contact-info');
+  }
+
+  async updateContactInfo(data) {
+    return this.fetch('/contact-info', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // About (update method)
+  async updateAbout(data) {
+    return this.fetch('/about', {
+      method: 'PUT',
       body: JSON.stringify(data),
     });
   }

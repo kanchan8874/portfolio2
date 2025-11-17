@@ -48,6 +48,9 @@ app.use('/api/projects', require('./routes/projects'));
 app.use('/api/skills', require('./routes/skills'));
 app.use('/api/about', require('./routes/about'));
 app.use('/api/socials', require('./routes/socials'));
+app.use('/api/testimonials', require('./routes/testimonials'));
+app.use('/api/hero', require('./routes/hero'));
+app.use('/api/contact-info', require('./routes/contactInfo'));
 app.use('/api/contact', require('./routes/contact'));
 
 // Health check endpoint
@@ -66,5 +69,17 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Please:`);
+    console.error(`   1. Stop the other process using port ${PORT}`);
+    console.error(`   2. Or set a different PORT in your .env file`);
+    console.error(`   3. On Windows, find the process: netstat -ano | findstr :${PORT}`);
+    console.error(`   4. Kill it: taskkill /F /PID <process_id>`);
+    process.exit(1);
+  } else {
+    console.error('❌ Server error:', err);
+    process.exit(1);
+  }
 });
 

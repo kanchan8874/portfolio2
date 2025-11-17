@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,12 +12,25 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [contactInfo, setContactInfo] = useState(null);
   const [isSending, setIsSending] = useState(false);
   const [errors, setErrors] = useState({});
   const { ref } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const data = await api.getContactInfo();
+        setContactInfo(data);
+      } catch (error) {
+        console.error("Error fetching contact info:", error);
+      }
+    };
+    fetchContactInfo();
+  }, []);
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -174,12 +187,12 @@ const Contact = () => {
           >
             Get In Touch
           </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 break-words">
             <span className="bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
               Let's Work Together
             </span>
           </h2>
-          <p className="text-gray-300 text-lg mb-4">
+          <p className="text-gray-300 text-base sm:text-lg mb-4 break-words">
             Have a project in mind? I'd love to hear from you!
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-secondary-600 mx-auto rounded"></div>
@@ -215,12 +228,17 @@ const Contact = () => {
                 errors.name
                   ? "border-red-500"
                   : "border-white/20 dark:border-gray-700/30"
-              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all`}
+              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm sm:text-base`}
               placeholder="John Doe"
               required
+              aria-required="true"
+              aria-invalid={errors.name ? "true" : "false"}
+              aria-describedby={errors.name ? "name-error" : undefined}
             />
             {errors.name && (
               <motion.p
+                id="name-error"
+                role="alert"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-1 text-red-400 text-sm"
@@ -251,12 +269,17 @@ const Contact = () => {
                 errors.email
                   ? "border-red-500"
                   : "border-white/20 dark:border-gray-700/30"
-              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all`}
+              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm sm:text-base`}
               placeholder="john@example.com"
               required
+              aria-required="true"
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
             {errors.email && (
               <motion.p
+                id="email-error"
+                role="alert"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-1 text-red-400 text-sm"
@@ -287,12 +310,17 @@ const Contact = () => {
                 errors.message
                   ? "border-red-500"
                   : "border-white/20 dark:border-gray-700/30"
-              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none`}
+              } rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none text-sm sm:text-base`}
               placeholder="Tell me about your project, ideas, or just say hello..."
               required
+              aria-required="true"
+              aria-invalid={errors.message ? "true" : "false"}
+              aria-describedby={errors.message ? "message-error" : undefined}
             />
             {errors.message && (
               <motion.p
+                id="message-error"
+                role="alert"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-1 text-red-400 text-sm"
@@ -335,10 +363,10 @@ const Contact = () => {
           <p>
             Or reach out directly at{" "}
             <a
-              href="mailto:kanchankushwaha65520@gmail.com"
+              href={`mailto:${contactInfo?.email || ""}`}
               className="text-primary-400 hover:text-primary-300 underline"
             >
-              kanchankushwaha65520@gmail.com
+              {contactInfo?.email || ""}
             </a>
           </p>
         </motion.div>

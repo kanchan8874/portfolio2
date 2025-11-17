@@ -5,10 +5,6 @@ import { useInView } from "react-intersection-observer";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import api from "../services/api";
-import college from "../assets/college.jpg";
-import eco from "../assets/eco.jpg";
-import portfolio from "../assets/portfolio.jpg";
-import doctor from "../assets/doctor.jpg";
 import { resolveProjectImage } from "../utils/resolveProjectImage";
 
 const Project = () => {
@@ -35,55 +31,9 @@ const Project = () => {
         setFilteredProjects(processedData);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        // Fallback projects
-        const fallbackProjects = [
-          {
-            _id: "1",
-            title: "College Project Showcase",
-            description: "Major project showcasing college projects",
-            image: college,
-            techStack: ["React", "Node.js", "MongoDB"],
-            category: "web",
-            liveLink: "https://college-project-showcase-9yta.vercel.app/",
-            githubLink: "",
-            featured: true,
-          },
-          {
-            _id: "2",
-            title: "Eco-friendly Marketplace",
-            description: "Minor project for eco products",
-            image: eco,
-            techStack: ["React", "MongoDB"],
-            category: "web",
-            liveLink: "#",
-            githubLink: "",
-            featured: false,
-          },
-          {
-            _id: "3",
-            title: "Portfolio Website",
-            description: "Personal portfolio website",
-            image: portfolio,
-            techStack: ["React", "Tailwind CSS"],
-            category: "web",
-            liveLink: "https://portfolio-gamma-wheat-89.vercel.app/",
-            githubLink: "",
-            featured: false,
-          },
-          {
-            _id: "4",
-            title: "E-doctor Connect",
-            description: "Major project for doctor connections",
-            image: doctor,
-            techStack: ["React", "Node.js", "MongoDB"],
-            category: "web",
-            liveLink: "#",
-            githubLink: "",
-            featured: true,
-          },
-        ];
-        setProjects(fallbackProjects);
-        setFilteredProjects(fallbackProjects);
+        // Minimal fallback - let API defaults handle it
+        setProjects([]);
+        setFilteredProjects([]);
       } finally {
         setLoading(false);
       }
@@ -163,11 +113,11 @@ const Project = () => {
           >
             My Work
           </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 break-words">
             <span className="gradient-text">Featured Projects</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-secondary-600 mx-auto rounded mb-8"></div>
-          <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto break-words px-4">
             A collection of projects I've built with passion and precision
           </p>
         </motion.div>
@@ -178,7 +128,7 @@ const Project = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 px-4"
         >
           {categories.map((category) => (
             <motion.button
@@ -186,11 +136,13 @@ const Project = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveFilter(category)}
-              className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+              className={`px-4 sm:px-6 py-2 rounded-full font-semibold transition-all duration-300 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                 activeFilter === category
                   ? "bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-lg scale-105"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 shadow-md"
               }`}
+              aria-label={`Filter projects by ${category}`}
+              aria-pressed={activeFilter === category}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
             </motion.button>
@@ -204,7 +156,7 @@ const Project = () => {
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
-            className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
           >
             {filteredProjects.map((project, index) => (
               <motion.div
@@ -220,7 +172,7 @@ const Project = () => {
                   className="glass-card rounded-2xl overflow-hidden h-full flex flex-col cursor-pointer"
                 >
                   {/* Project Image */}
-                  <div className="relative overflow-hidden h-64">
+                  <div className="relative overflow-hidden h-48 sm:h-56 md:h-64">
                     <LazyLoadImage
                       src={project.image}
                       alt={project.title}

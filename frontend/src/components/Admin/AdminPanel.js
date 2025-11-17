@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaPlus, FaTrash, FaLock, FaUnlock } from "react-icons/fa";
+import { FaPlus, FaTrash, FaLock, FaUnlock, FaEdit, FaUser, FaCode, FaShareAlt, FaQuoteLeft, FaHome, FaEnvelope, FaCog } from "react-icons/fa";
 import AddProject from "./AddProject";
+import ManageAbout from "./ManageAbout";
+import ManageHero from "./ManageHero";
+import ManageSkills from "./ManageSkills";
+import ManageSocials from "./ManageSocials";
+import ManageTestimonials from "./ManageTestimonials";
+import ManageContact from "./ManageContact";
 import api from "../../services/api";
 import { resolveProjectImage } from "../../utils/resolveProjectImage";
 
 const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [activeTab, setActiveTab] = useState("projects");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const [showManageAbout, setShowManageAbout] = useState(false);
+  const [showManageHero, setShowManageHero] = useState(false);
+  const [showManageSkills, setShowManageSkills] = useState(false);
+  const [showManageSocials, setShowManageSocials] = useState(false);
+  const [showManageTestimonials, setShowManageTestimonials] = useState(false);
+  const [showManageContact, setShowManageContact] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState(null);
@@ -152,17 +166,10 @@ const AdminPanel = () => {
               Admin Panel
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Manage your portfolio projects
+              Manage your entire portfolio content
             </p>
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="btn-primary flex items-center gap-2"
-            >
-              <FaPlus />
-              Add Project
-            </button>
             <button
               onClick={handleLogout}
               className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
@@ -173,10 +180,50 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        {/* Projects List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects.map((project) => (
-            <motion.div
+        {/* Tabs Navigation */}
+        <div className="glass-card p-2 rounded-xl mb-6 flex flex-wrap gap-2 overflow-x-auto">
+          {[
+            { id: "projects", label: "Projects", icon: FaCode },
+            { id: "about", label: "About", icon: FaUser },
+            { id: "hero", label: "Hero", icon: FaHome },
+            { id: "skills", label: "Skills", icon: FaCog },
+            { id: "socials", label: "Socials", icon: FaShareAlt },
+            { id: "testimonials", label: "Testimonials", icon: FaQuoteLeft },
+            { id: "contact", label: "Contact", icon: FaEnvelope },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm sm:text-base whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                  activeTab === tab.id
+                    ? "bg-gradient-to-r from-primary-600 to-secondary-600 text-white"
+                    : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                <Icon />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Projects Tab */}
+        {activeTab === "projects" && (
+          <>
+            <div className="mb-4">
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="btn-primary flex items-center gap-2"
+              >
+                <FaPlus />
+                Add Project
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {projects.map((project) => (
+                <motion.div
               key={project._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -185,30 +232,149 @@ const AdminPanel = () => {
               <img
                 src={project.image}
                 alt={project.title}
-                className="w-full h-32 object-cover rounded-lg mb-3"
+                className="w-full h-32 sm:h-40 object-cover rounded-lg mb-3"
+                loading="lazy"
               />
-              <h3 className="font-bold text-lg mb-2">{project.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+              <h3 className="font-bold text-base sm:text-lg mb-2 break-words">{project.title}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 break-words">
                 {project.description}
               </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => confirmDelete(project._id)}
-                  className="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 text-sm"
+                  onClick={() => setEditingProject(project)}
+                  className="flex-1 px-2 sm:px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                  aria-label={`Edit ${project.title}`}
                 >
-                  <FaTrash />
-                  Delete
+                  <FaEdit size={14} />
+                  <span className="hidden sm:inline">Edit</span>
+                </button>
+                <button
+                  onClick={() => confirmDelete(project._id)}
+                  className="flex-1 px-2 sm:px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                  aria-label={`Delete ${project.title}`}
+                >
+                  <FaTrash size={14} />
+                  <span className="hidden sm:inline">Delete</span>
                 </button>
               </div>
-            </motion.div>
-          ))}
-        </div>
+                </motion.div>
+              ))}
+            </div>
+            {projects.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400">
+                  No projects found. Add your first project!
+                </p>
+              </div>
+            )}
+          </>
+        )}
 
-        {projects.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">
-              No projects found. Add your first project!
-            </p>
+        {/* About Tab */}
+        {activeTab === "about" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage About section content
+              </p>
+              <button
+                onClick={() => setShowManageAbout(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Edit About Section
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Hero Tab */}
+        {activeTab === "hero" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage Hero section content (Name, Title, CTA Buttons)
+              </p>
+              <button
+                onClick={() => setShowManageHero(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Edit Hero Section
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Skills Tab */}
+        {activeTab === "skills" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage Skills section
+              </p>
+              <button
+                onClick={() => setShowManageSkills(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Manage Skills
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Socials Tab */}
+        {activeTab === "socials" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage Social Media Links
+              </p>
+              <button
+                onClick={() => setShowManageSocials(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Manage Social Links
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Testimonials Tab */}
+        {activeTab === "testimonials" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage Testimonials
+              </p>
+              <button
+                onClick={() => setShowManageTestimonials(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Manage Testimonials
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Contact Tab */}
+        {activeTab === "contact" && (
+          <div className="glass-card p-6 rounded-xl">
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Manage Contact Information
+              </p>
+              <button
+                onClick={() => setShowManageContact(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <FaEdit />
+                Edit Contact Info
+              </button>
+            </div>
           </div>
         )}
         {pendingDelete && (
@@ -263,6 +429,78 @@ const AdminPanel = () => {
           onClose={() => setShowAddForm(false)}
           onSuccess={() => {
             setShowAddForm(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Edit Project Modal */}
+      {editingProject && (
+        <AddProject
+          project={editingProject}
+          onClose={() => setEditingProject(null)}
+          onSuccess={() => {
+            setEditingProject(null);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage About Modal */}
+      {showManageAbout && (
+        <ManageAbout
+          onClose={() => {
+            setShowManageAbout(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage Hero Modal */}
+      {showManageHero && (
+        <ManageHero
+          onClose={() => {
+            setShowManageHero(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage Skills Modal */}
+      {showManageSkills && (
+        <ManageSkills
+          onClose={() => {
+            setShowManageSkills(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage Socials Modal */}
+      {showManageSocials && (
+        <ManageSocials
+          onClose={() => {
+            setShowManageSocials(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage Testimonials Modal */}
+      {showManageTestimonials && (
+        <ManageTestimonials
+          onClose={() => {
+            setShowManageTestimonials(false);
+            fetchProjects();
+          }}
+        />
+      )}
+
+      {/* Manage Contact Modal */}
+      {showManageContact && (
+        <ManageContact
+          onClose={() => {
+            setShowManageContact(false);
             fetchProjects();
           }}
         />

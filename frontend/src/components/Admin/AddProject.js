@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaSave, FaTimes, FaImage, FaLink, FaCode, FaTags } from "react-icons/fa";
+import { FaSave, FaTimes, FaImage, FaLink, FaCode, FaTags, FaEdit } from "react-icons/fa";
 import api from "../../services/api";
 
-const AddProject = ({ onClose, onSuccess }) => {
+const AddProject = ({ onClose, onSuccess, project = null }) => {
+  const isEditMode = !!project;
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -19,6 +21,26 @@ const AddProject = ({ onClose, onSuccess }) => {
     order: 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Populate form when editing
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        title: project.title || "",
+        description: project.description || "",
+        longDescription: project.longDescription || "",
+        image: project.image || "",
+        techStack: Array.isArray(project.techStack) 
+          ? project.techStack.join(", ") 
+          : project.techStack || "",
+        category: project.category || "web",
+        liveLink: project.liveLink || "",
+        githubLink: project.githubLink || "",
+        featured: project.featured || false,
+        order: project.order || 0,
+      });
+    }
+  }, [project]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -42,31 +64,41 @@ const AddProject = ({ onClose, onSuccess }) => {
           .filter((tech) => tech.length > 0),
       };
 
-      await api.createProject(projectData);
-      toast.success("Project successfully added! 🎉", {
-        position: "top-right",
-        theme: "dark",
-      });
-      
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        longDescription: "",
-        image: "",
-        techStack: "",
-        category: "web",
-        liveLink: "",
-        githubLink: "",
-        featured: false,
-        order: 0,
-      });
+      if (isEditMode) {
+        // Update existing project
+        await api.updateProject(project._id, projectData);
+        toast.success("Project successfully updated! 🎉", {
+          position: "top-right",
+          theme: "dark",
+        });
+      } else {
+        // Create new project
+        await api.createProject(projectData);
+        toast.success("Project successfully added! 🎉", {
+          position: "top-right",
+          theme: "dark",
+        });
+        
+        // Reset form only for create mode
+        setFormData({
+          title: "",
+          description: "",
+          longDescription: "",
+          image: "",
+          techStack: "",
+          category: "web",
+          liveLink: "",
+          githubLink: "",
+          featured: false,
+          order: 0,
+        });
+      }
 
       if (onSuccess) onSuccess();
       if (onClose) onClose();
     } catch (error) {
-      console.error("Error adding project:", error);
-      toast.error("Failed to add project. Please try again.", {
+      console.error(`Error ${isEditMode ? 'updating' : 'adding'} project:`, error);
+      toast.error(`Failed to ${isEditMode ? 'update' : 'add'} project. Please try again.`, {
         position: "top-right",
         theme: "dark",
       });
@@ -86,7 +118,9 @@ const AddProject = ({ onClose, onSuccess }) => {
       >
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold gradient-text">Add New Project</h2>
+          <h2 className="text-2xl font-bold gradient-text">
+            {isEditMode ? "Edit Project" : "Add New Project"}
+          </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
@@ -273,12 +307,12 @@ const AddProject = ({ onClose, onSuccess }) => {
               {isSubmitting ? (
                 <>
                   <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                  Adding...
+                  {isEditMode ? "Updating..." : "Adding..."}
                 </>
               ) : (
                 <>
-                  <FaSave />
-                  Add Project
+                  {isEditMode ? <FaEdit /> : <FaSave />}
+                  {isEditMode ? "Update Project" : "Add Project"}
                 </>
               )}
             </button>

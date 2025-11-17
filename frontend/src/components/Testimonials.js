@@ -21,35 +21,8 @@ const Testimonials = () => {
       } catch (error) {
         console.error("Error fetching testimonials:", error);
         // Fallback testimonials
-        setTestimonials([
-          {
-            _id: "1",
-            name: "Manisha Upadhyay",
-            role: "Operations Head · GreenCart",
-            content:
-              "Kanchan joined us right when our inventory dashboard was stuck. She sat with the store managers, noted their complaints, and shipped fixes in plain English updates every evening. The team now trusts the dashboard for daily planning.",
-            rating: 5,
-            avatar: "",
-          },
-          {
-            _id: "2",
-            name: "Smita Rawat",
-            role: "Product Manager · ClinicBridge",
-            content:
-              "We had just two weeks to show a working telemedicine MVP. Kanchan set up the video consult flow, wired the appointment reminders and even helped our support folks record demos. She behaves like a teammate, not a vendor.",
-            rating: 5,
-            avatar: "",
-          },
-          {
-            _id: "3",
-            name: "Rahul Dev Singh",
-            role: "Founder · Craftfolio",
-            content:
-              "I had a Notion doc full of copy and zero design sense. Kanchan converted it into a neat portfolio, kept every section editable for me, and nudged me with reminders so content actually went live. Clients now mention my site in calls.",
-            rating: 5,
-            avatar: "",
-          },
-        ]);
+        // Minimal fallback - let API defaults handle it
+        setTestimonials([]);
       } finally {
         setLoading(false);
       }
@@ -117,7 +90,7 @@ const Testimonials = () => {
           >
             Testimonials
           </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 break-words">
             <span className="gradient-text">What People Say</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-secondary-600 mx-auto rounded"></div>
@@ -193,6 +166,7 @@ const Testimonials = () => {
                   className="text-gray-600 dark:text-gray-400"
                 >
                   {currentTestimonial.role}
+                  {currentTestimonial.company && ` · ${currentTestimonial.company}`}
                 </motion.p>
               </div>
             </motion.div>

@@ -108,4 +108,3 @@ const HeroParticles = () => {
 };
 
 export default HeroParticles;
-

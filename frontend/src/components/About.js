@@ -25,35 +25,16 @@ const About = () => {
         });
       } catch (error) {
         console.error("Error fetching about data:", error);
-        // Fallback data
+        // Minimal fallback - let API defaults handle it
         setAboutData({
-          name: "Kanchan Kushwaha",
-          title: "MERN Full Stack Developer",
-          bio: "I'm a MERN Full Stack Developer and an aspiring Database Administrator (DBA) with a passion for building scalable, user-friendly web applications.",
-          email: "kanchankushwaha65520@gmail.com",
-          location: "Noida",
-          degree: "B.Tech in Computer Science",
-          freelance: "Available",
-          highlights: [
-            "Develop full-stack web applications using the MERN stack",
-            "Build responsive, SEO-friendly websites with Next.js",
-            "Continuously learning Database Administration (SQL & NoSQL)",
-          ],
-          profileImage: profilePic,
-        });
-        setAboutData({
-          name: "Kanchan Kushwaha",
-          title: "MERN Full Stack Developer",
-          bio: "I'm a MERN Full Stack Developer and an aspiring Database Administrator (DBA) with a passion for building scalable, user-friendly web applications.",
-          email: "kanchankushwaha65520@gmail.com",
-          location: "Noida",
-          degree: "B.Tech in Computer Science",
-          freelance: "Available",
-          highlights: [
-            "Develop full-stack web applications using the MERN stack",
-            "Build responsive, SEO-friendly websites with Next.js",
-            "Continuously learning Database Administration (SQL & NoSQL)",
-          ],
+          name: "",
+          title: "",
+          bio: "",
+          email: "",
+          location: "",
+          degree: "",
+          freelance: "",
+          highlights: [],
           profileImage: profilePic,
         });
       } finally {
@@ -130,7 +111,7 @@ const About = () => {
           >
             About Me
           </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 break-words">
             <span className="gradient-text">Who I Am</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-secondary-600 mx-auto rounded"></div>
@@ -152,7 +133,7 @@ const About = () => {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="text-2xl md:text-3xl font-bold mb-4"
+                className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 break-words"
               >
                 I'm {aboutData?.name} and I'm a{" "}
                 <span className="text-primary-600 dark:text-primary-400">
@@ -164,7 +145,7 @@ const About = () => {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6"
+                className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6 break-words"
               >
                 {aboutData?.bio || "A passionate developer..."}
               </motion.p>
