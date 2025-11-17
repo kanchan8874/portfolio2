@@ -28,47 +28,50 @@ const AdminPanel = () => {
   const [pendingDelete, setPendingDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Simple password authentication (in production, use proper auth)
-  const getAdminPassword = () => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("fallbackAdminPassword");
-      if (stored) {
-        return stored;
-      }
-    }
-    if (process.env.REACT_APP_ADMIN_PASSWORD) {
-      return process.env.REACT_APP_ADMIN_PASSWORD;
-    }
-    return "kanchan@2025!";
-  };
-
-  const ADMIN_PASSWORD = getAdminPassword();
-
   useEffect(() => {
-    // Check if already authenticated (session)
-    const authStatus = localStorage.getItem("adminAuth");
-    if (authStatus === "true") {
-      setIsAuthenticated(true);
-      fetchProjects();
-    } else {
-      setLoading(false);
-    }
+    // Check if already authenticated with valid token
+    const checkAuth = async () => {
+      try {
+        const result = await api.verifyToken();
+        if (result.valid) {
+          setIsAuthenticated(true);
+          fetchProjects();
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        setLoading(false);
+      }
+    };
+    checkAuth();
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem("adminAuth", "true");
-      fetchProjects();
-    } else {
-      alert("Invalid password!");
+    if (!password) {
+      alert("Please enter password!");
+      return;
+    }
+
+    try {
+      const response = await api.adminLogin(password);
+      if (response.success && response.token) {
+        setIsAuthenticated(true);
+        setPassword("");
+        fetchProjects();
+      } else {
+        alert(response.error || "Invalid password!");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert(error.message || "Login failed. Please try again.");
     }
   };
 
   const handleLogout = () => {
+    api.logout();
     setIsAuthenticated(false);
-    localStorage.removeItem("adminAuth");
     setPassword("");
   };
 

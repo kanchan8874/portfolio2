@@ -9,7 +9,6 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,7 +42,18 @@ mongoose
     );
   });
 
+// CORS Configuration (more secure for production)
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : '*', // Allow all in development
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 // Routes
+app.use('/api/auth', require('./routes/auth')); // Auth routes (login, verify) - NO AUTH NEEDED
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/skills', require('./routes/skills'));
 app.use('/api/about', require('./routes/about'));

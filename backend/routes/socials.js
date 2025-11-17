@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Social = require('../models/Social');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET all socials
 router.get('/', async (req, res) => {
@@ -12,8 +13,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create social
-router.post('/', async (req, res) => {
+// POST create social (Admin only)
+router.post('/', authenticateAdmin, async (req, res) => {
   try {
     const social = new Social(req.body);
     await social.save();
@@ -23,8 +24,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update social
-router.put('/:id', async (req, res) => {
+// PUT update social (Admin only)
+router.put('/:id', authenticateAdmin, async (req, res) => {
   try {
     const social = await Social.findByIdAndUpdate(
       req.params.id,
@@ -40,8 +41,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE social
-router.delete('/:id', async (req, res) => {
+// DELETE social (Admin only)
+router.delete('/:id', authenticateAdmin, async (req, res) => {
   try {
     const social = await Social.findByIdAndDelete(req.params.id);
     if (!social) {

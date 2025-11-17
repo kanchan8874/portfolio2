@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET all projects
 router.get('/', async (req, res) => {
@@ -35,8 +36,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST create project
-router.post('/', async (req, res) => {
+// POST create project (Admin only)
+router.post('/', authenticateAdmin, async (req, res) => {
   try {
     const project = new Project(req.body);
     await project.save();
@@ -46,8 +47,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update project
-router.put('/:id', async (req, res) => {
+// PUT update project (Admin only)
+router.put('/:id', authenticateAdmin, async (req, res) => {
   try {
     const project = await Project.findByIdAndUpdate(
       req.params.id,
@@ -63,8 +64,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE project
-router.delete('/:id', async (req, res) => {
+// DELETE project (Admin only)
+router.delete('/:id', authenticateAdmin, async (req, res) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
     if (!project) {

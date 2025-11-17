@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Skill = require('../models/Skill');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET all skills
 router.get('/', async (req, res) => {
@@ -22,8 +23,8 @@ router.get('/category/:category', async (req, res) => {
   }
 });
 
-// POST create skill
-router.post('/', async (req, res) => {
+// POST create skill (Admin only)
+router.post('/', authenticateAdmin, async (req, res) => {
   try {
     const skill = new Skill(req.body);
     await skill.save();
@@ -33,8 +34,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update skill
-router.put('/:id', async (req, res) => {
+// PUT update skill (Admin only)
+router.put('/:id', authenticateAdmin, async (req, res) => {
   try {
     const skill = await Skill.findByIdAndUpdate(
       req.params.id,
@@ -50,8 +51,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE skill
-router.delete('/:id', async (req, res) => {
+// DELETE skill (Admin only)
+router.delete('/:id', authenticateAdmin, async (req, res) => {
   try {
     const skill = await Skill.findByIdAndDelete(req.params.id);
     if (!skill) {

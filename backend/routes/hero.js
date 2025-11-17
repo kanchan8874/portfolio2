@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Hero = require('../models/Hero');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET hero info
 router.get('/', async (req, res) => {
@@ -30,8 +31,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT update hero
-router.put('/', async (req, res) => {
+// PUT update hero (Admin only)
+router.put('/', authenticateAdmin, async (req, res) => {
   try {
     let hero = await Hero.findOne();
     if (!hero) {

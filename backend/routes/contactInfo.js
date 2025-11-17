@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ContactInfo = require('../models/ContactInfo');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET contact info
 router.get('/', async (req, res) => {
@@ -9,8 +10,8 @@ router.get('/', async (req, res) => {
     if (!contactInfo) {
       // Create default if none exists
       contactInfo = new ContactInfo({
-        email: 'kanchankushwaha65520@gmail.com',
-        location: 'Noida',
+        email: process.env.CONTACT_EMAIL || process.env.EMAIL_USER || '',
+        location: '',
         availability: 'Available'
       });
       await contactInfo.save();
@@ -21,8 +22,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT update contact info
-router.put('/', async (req, res) => {
+// PUT update contact info (Admin only)
+router.put('/', authenticateAdmin, async (req, res) => {
   try {
     let contactInfo = await ContactInfo.findOne();
     if (!contactInfo) {

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const About = require('../models/About');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // GET about info
 router.get('/', async (req, res) => {
@@ -23,8 +24,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT update about
-router.put('/', async (req, res) => {
+// PUT update about (Admin only)
+router.put('/', authenticateAdmin, async (req, res) => {
   try {
     let about = await About.findOne();
     if (!about) {

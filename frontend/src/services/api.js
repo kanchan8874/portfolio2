@@ -1,11 +1,36 @@
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 class ApiService {
+  // Get auth token from localStorage
+  getAuthToken() {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('adminToken');
+    }
+    return null;
+  }
+
+  // Set auth token
+  setAuthToken(token) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('adminToken', token);
+    }
+  }
+
+  // Remove auth token
+  removeAuthToken() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('adminToken');
+    }
+  }
+
   async fetch(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const token = this.getAuthToken();
+    
     const config = {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
@@ -13,14 +38,49 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
+      
+      // If unauthorized, clear token
+      if (response.status === 401) {
+        this.removeAuthToken();
+        throw new Error('Unauthorized - Please login again');
+      }
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
       console.error(`API Error (${endpoint}):`, error);
       throw error;
     }
+  }
+
+  // Auth methods
+  async adminLogin(password) {
+    const response = await this.fetch('/auth/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+    
+    if (response.token) {
+      this.setAuthToken(response.token);
+    }
+    
+    return response;
+  }
+
+  async verifyToken() {
+    try {
+      return await this.fetch('/auth/admin/verify');
+    } catch (error) {
+      this.removeAuthToken();
+      return { valid: false };
+    }
+  }
+
+  logout() {
+    this.removeAuthToken();
   }
 
   // Projects

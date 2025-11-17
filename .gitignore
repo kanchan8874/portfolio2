@@ -16,6 +16,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env*.local
+# Note: env.example files are templates and SHOULD be committed
 
 # Build outputs
 build/
@@ -81,3 +82,4 @@ out/
 
 # Misc
 *.pem
+update-env.ps1
