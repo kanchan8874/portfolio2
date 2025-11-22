@@ -23,12 +23,36 @@ mongoose
   });
 
 // CORS Configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://portfolio2-1-t3ns.onrender.com',
+  'http://localhost:3000',
+  'http://localhost:3001',
+].filter(Boolean); // Remove undefined values
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // Only Frontend Allowed
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
 app.use(cors(corsOptions));
+
+// Log CORS configuration
+console.log('🌐 CORS Configuration:');
+console.log('   Allowed Origins:', allowedOrigins.length > 0 ? allowedOrigins.join(', ') : 'None configured');
+console.log('   FRONTEND_URL:', process.env.FRONTEND_URL || 'Not set');
 
 // Routes
 app.use('/api/auth', require('./routes/auth')); 

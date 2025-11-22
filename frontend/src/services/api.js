@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL ||  "https://portfolio2-11.onrender.com";
+// Backend API URL - Use environment variable or default to deployed backend
+const API_BASE_URL = process.env.REACT_APP_API_URL || "https://portfolio2-11.onrender.com";
 
 class ApiService {
   // Get auth token from localStorage
