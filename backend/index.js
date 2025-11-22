@@ -70,6 +70,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Portfolio Backend Running' });
 });
 
+// Diagnostics Route (for debugging)
+app.use('/api/diagnostics', require('./routes/diagnostics'));
+
 // Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

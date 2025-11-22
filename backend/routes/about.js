@@ -6,8 +6,10 @@ const { authenticateAdmin } = require('../middleware/auth');
 // GET about info
 router.get('/', async (req, res) => {
   try {
+    console.log('📥 GET /api/about - Fetching about data');
     let about = await About.findOne();
     if (!about) {
+      console.log('⚠️ No about data found, creating default...');
       // Create default if none exists
       about = new About({
         name: 'Kanchan Kushwaha',
@@ -17,9 +19,13 @@ router.get('/', async (req, res) => {
         profileImage: '/assets/image.png'
       });
       await about.save();
+      console.log('✅ Default about data created');
+    } else {
+      console.log(`✅ About data found: ${about.name}`);
     }
     res.json(about);
   } catch (error) {
+    console.error('❌ Error in GET /api/about:', error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -19,13 +19,19 @@ const About = () => {
   useEffect(() => {
     const fetchAbout = async () => {
       try {
+        console.log('📥 Fetching About data...');
         const data = await api.getAbout();
+        console.log('✅ About data received:', data);
         setAboutData({
           ...data,
           profileImage: resolveProfileImage(data.profileImage),
         });
       } catch (error) {
-        console.error("Error fetching about data:", error);
+        console.error("❌ Error fetching about data:", {
+          message: error.message,
+          stack: error.stack,
+          endpoint: '/api/about'
+        });
         // Minimal fallback - let API defaults handle it
         setAboutData({
           name: "",

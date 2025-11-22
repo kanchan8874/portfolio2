@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test-email": "node scripts/testEmail.js"
+    "test-email": "node scripts/testEmail.js",
+    "seed": "node seed.js"
   },
   "keywords": [
     "portfolio",

@@ -24,10 +24,19 @@ const Skills = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
+        console.log('📥 Fetching Skills data...');
         const data = await api.getSkills();
-        setSkills(data);
+        console.log('✅ Skills data received:', {
+          count: data?.length || 0,
+          skills: data
+        });
+        setSkills(data || []);
       } catch (error) {
-        console.error("Error fetching skills:", error);
+        console.error("❌ Error fetching skills:", {
+          message: error.message,
+          stack: error.stack,
+          endpoint: '/api/skills'
+        });
         // Minimal fallback - let API defaults handle it
         setSkills([]);
       } finally {

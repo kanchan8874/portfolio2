@@ -38,7 +38,14 @@ class ApiService {
     };
 
     try {
+      console.log(`🔵 API Request: ${url}`);
       const response = await fetch(url, config);
+      
+      console.log(`📡 API Response (${endpoint}):`, {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
       
       // If unauthorized, clear token
       if (response.status === 401) {
@@ -48,11 +55,28 @@ class ApiService {
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const errorMessage = errorData.error || `HTTP error! status: ${response.status}`;
+        console.error(`❌ API Error (${endpoint}):`, {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorMessage,
+          url: url
+        });
+        throw new Error(errorMessage);
       }
-      return await response.json();
+      
+      const data = await response.json();
+      console.log(`✅ API Success (${endpoint}):`, {
+        dataLength: Array.isArray(data) ? data.length : Object.keys(data).length,
+        hasData: Array.isArray(data) ? data.length > 0 : Object.keys(data).length > 0
+      });
+      return data;
     } catch (error) {
-      console.error(`API Error (${endpoint}):`, error);
+      console.error(`❌ API Fetch Error (${endpoint}):`, {
+        message: error.message,
+        url: url,
+        type: error.name
+      });
       throw error;
     }
   }

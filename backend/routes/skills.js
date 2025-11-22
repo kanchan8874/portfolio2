@@ -6,9 +6,15 @@ const { authenticateAdmin } = require('../middleware/auth');
 // GET all skills
 router.get('/', async (req, res) => {
   try {
+    console.log('📥 GET /api/skills - Fetching skills data');
     const skills = await Skill.find().sort({ order: 1, category: 1 });
+    console.log(`✅ Found ${skills.length} skills`);
+    if (skills.length === 0) {
+      console.warn('⚠️ No skills found in database. Consider running: npm run seed');
+    }
     res.json(skills);
   } catch (error) {
+    console.error('❌ Error in GET /api/skills:', error);
     res.status(500).json({ error: error.message });
   }
 });
