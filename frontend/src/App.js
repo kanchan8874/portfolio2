@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Project from "./components/Project";
+import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import AdminPanel from "./components/Admin/AdminPanel";
@@ -36,6 +37,7 @@ const App = () => {
                   <About />
                   <Skills />
                   <Project />
+                  <Testimonials />
                   <Contact />
                   <Footer />
                 </div>

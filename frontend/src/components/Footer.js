@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaInstagram, FaHeart, FaArrowUp } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaHeart, FaArrowUp } from "react-icons/fa";
 import api from "../services/api";
 
 const Footer = () => {
@@ -14,11 +14,7 @@ const Footer = () => {
           api.getSocials(),
           api.getAbout(),
         ]);
-        setSocials(
-          socialsData.filter((social) =>
-            ["FaLinkedin", "FaGithub", "FaInstagram"].includes(social.icon)
-          )
-        );
+        setSocials(socialsData);
         setAboutData(about);
       } catch (error) {
         console.error("Error fetching footer data:", error);
@@ -31,6 +27,8 @@ const Footer = () => {
     FaLinkedin: FaLinkedin,
     FaGithub: FaGithub,
     FaInstagram: FaInstagram,
+    FaTwitter: FaTwitter,
+    FaFacebook: FaFacebook,
   };
 
   const scrollToTop = () => {

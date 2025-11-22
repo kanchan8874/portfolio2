@@ -191,13 +191,17 @@ const ManageAbout = ({ onClose }) => {
           <div>
             <label className="block text-sm font-semibold mb-2">Profile Image URL *</label>
             <input
-              type="url"
+              type="text"
               name="profileImage"
               value={formData.profileImage}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+              placeholder="/assets/image.png or https://example.com/image.png"
             />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Enter a full URL (http://, https://) or relative path (/assets/image.png)
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

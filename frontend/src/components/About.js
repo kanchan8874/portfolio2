@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { FaDownload } from "react-icons/fa";
 import api from "../services/api";
 import profilePic from "../assets/image.png";
 import { resolveProfileImage } from "../utils/resolveProfileImage";
@@ -234,22 +235,57 @@ const About = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.9 }}
-                  className="flex justify-between items-center py-2"
+                  className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700"
                 >
                   <span className="font-semibold">Location:</span>
                   <span className="text-gray-600 dark:text-gray-400">
                     {aboutData?.location || "N/A"}
                   </span>
                 </motion.li>
+                {aboutData?.resume && (
+                  <motion.li
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 1.0 }}
+                    className="flex justify-between items-center py-2"
+                  >
+                    <span className="font-semibold">Resume:</span>
+                    <a
+                      href={aboutData.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-600 dark:text-primary-400 hover:underline flex items-center gap-1"
+                    >
+                      <FaDownload size={14} />
+                      Download
+                    </a>
+                  </motion.li>
+                )}
               </ul>
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-6 inline-block btn-primary text-center w-full"
-              >
-                Hire Me
-              </motion.a>
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex-1 btn-primary text-center"
+                >
+                  Hire Me
+                </motion.a>
+                {aboutData?.resume && (
+                  <motion.a
+                    href={aboutData.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-secondary-600 to-primary-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 text-center flex items-center justify-center gap-2"
+                  >
+                    <FaDownload />
+                    Download Resume
+                  </motion.a>
+                )}
+              </div>
             </motion.div>
           </motion.div>
 
@@ -307,24 +343,6 @@ const About = () => {
               </motion.div>
             ))}
 
-            {/* Profile Image for Mobile/Alternative View */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="lg:hidden flex justify-center"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full blur-2xl opacity-50 animate-pulse"></div>
-                <LazyLoadImage
-                  src={aboutData?.profileImage || profilePic}
-                  alt={aboutData?.name || "Profile"}
-                  effect="blur"
-                  className="relative w-64 h-64 rounded-full object-cover border-4 border-white/20 shadow-2xl"
-                />
-              </div>
-            </motion.div>
           </motion.div>
         </motion.div>
       </div>

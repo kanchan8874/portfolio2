@@ -329,7 +329,7 @@ const Home = () => {
                 <img
                 src={aboutData?.profileImage || profilePic}
                 alt={`${aboutData?.name || "Kanchan Kushwaha"} profile`}
-                className="relative w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full object-cover border-4 border-white/30 dark:border-white/20 shadow-2xl ring-4 ring-primary-500/20 dark:ring-primary-500/10"
+                className="relative w-56 h-56 xs:w-64 xs:h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full object-cover border-4 border-white/30 dark:border-white/20 shadow-2xl ring-4 ring-primary-500/20 dark:ring-primary-500/10"
                 loading="eager"
                 width="384"
                 height="384"

@@ -57,11 +57,8 @@ const Testimonials = () => {
     );
   }
 
-  if (testimonials.length === 0) {
-    return null; // Don't show section if no testimonials
-  }
-
-  const currentTestimonial = testimonials[currentIndex];
+  // Show section even if no testimonials
+  const currentTestimonial = testimonials.length > 0 ? testimonials[currentIndex] : null;
 
   return (
     <section
@@ -98,120 +95,145 @@ const Testimonials = () => {
 
         {/* Testimonial Carousel */}
         <div className="relative">
-          <AnimatePresence mode="wait">
+          {testimonials.length === 0 ? (
             <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, x: 100, scale: 0.9 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -100, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="glass-card p-8 md:p-12 rounded-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="glass-card p-8 md:p-12 rounded-2xl text-center"
             >
-              {/* Quote Icon */}
               <div className="flex justify-center mb-6">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="p-4 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full text-white"
-                >
+                <div className="p-4 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full text-white">
                   <FaQuoteLeft size={24} />
-                </motion.div>
+                </div>
               </div>
-
-              {/* Content */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-xl md:text-2xl text-center text-gray-700 dark:text-gray-300 mb-8 leading-relaxed italic"
-              >
-                "{currentTestimonial.content}"
-              </motion.p>
-
-              {/* Rating */}
-              <div className="flex justify-center gap-1 mb-6">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                  >
-                    <FaStar
-                      className={`text-2xl ${
-                        i < (currentTestimonial.rating || 5)
-                          ? "text-yellow-400"
-                          : "text-gray-300 dark:text-gray-600"
-                      }`}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Author */}
-              <div className="text-center">
-                <motion.h4
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2"
-                >
-                  {currentTestimonial.name}
-                </motion.h4>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="text-gray-600 dark:text-gray-400"
-                >
-                  {currentTestimonial.role}
-                  {currentTestimonial.company && ` · ${currentTestimonial.company}`}
-                </motion.p>
-              </div>
+              <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-4">
+                No testimonials available yet.
+              </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                Check back soon for client testimonials!
+              </p>
             </motion.div>
-          </AnimatePresence>
+          ) : (
+            <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -100, scale: 0.9 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="glass-card p-8 md:p-12 rounded-2xl"
+                >
+                  {/* Quote Icon */}
+                  <div className="flex justify-center mb-6">
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: 0.2, type: "spring" }}
+                      className="p-4 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full text-white"
+                    >
+                      <FaQuoteLeft size={24} />
+                    </motion.div>
+                  </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-center items-center gap-4 mt-8">
-            <motion.button
-              onClick={prevTestimonial}
-              whileHover={{ scale: 1.1, x: -5 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-3 bg-white dark:bg-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all"
-              aria-label="Previous testimonial"
-            >
-              <FaChevronLeft size={20} />
-            </motion.button>
+                  {/* Content */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-xl md:text-2xl text-center text-gray-700 dark:text-gray-300 mb-8 leading-relaxed italic"
+                  >
+                    "{currentTestimonial.content}"
+                  </motion.p>
 
-            {/* Indicators */}
-            <div className="flex gap-2">
-              {testimonials.map((_, index) => (
-                <motion.button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentIndex
-                      ? "w-8 bg-gradient-to-r from-primary-600 to-secondary-600"
-                      : "w-2 bg-gray-300 dark:bg-gray-600"
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
-            </div>
+                  {/* Rating */}
+                  <div className="flex justify-center gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 + i * 0.1 }}
+                      >
+                        <FaStar
+                          className={`text-2xl ${
+                            i < (currentTestimonial.rating || 5)
+                              ? "text-yellow-400"
+                              : "text-gray-300 dark:text-gray-600"
+                          }`}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
 
-            <motion.button
-              onClick={nextTestimonial}
-              whileHover={{ scale: 1.1, x: 5 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-3 bg-white dark:bg-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all"
-              aria-label="Next testimonial"
-            >
-              <FaChevronRight size={20} />
-            </motion.button>
-          </div>
+                  {/* Author */}
+                  <div className="text-center">
+                    <motion.h4
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2"
+                    >
+                      {currentTestimonial.name}
+                    </motion.h4>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 }}
+                      className="text-gray-600 dark:text-gray-400"
+                    >
+                      {currentTestimonial.role}
+                      {currentTestimonial.company && ` · ${currentTestimonial.company}`}
+                    </motion.p>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Navigation Buttons */}
+              {testimonials.length > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8">
+                  <motion.button
+                    onClick={prevTestimonial}
+                    whileHover={{ scale: 1.1, x: -5 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="p-3 bg-white dark:bg-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all"
+                    aria-label="Previous testimonial"
+                  >
+                    <FaChevronLeft size={20} />
+                  </motion.button>
+
+                  {/* Indicators */}
+                  <div className="flex gap-2">
+                    {testimonials.map((_, index) => (
+                      <motion.button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={`h-2 rounded-full transition-all ${
+                          index === currentIndex
+                            ? "w-8 bg-gradient-to-r from-primary-600 to-secondary-600"
+                            : "w-2 bg-gray-300 dark:bg-gray-600"
+                        }`}
+                        aria-label={`Go to testimonial ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <motion.button
+                    onClick={nextTestimonial}
+                    whileHover={{ scale: 1.1, x: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="p-3 bg-white dark:bg-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all"
+                    aria-label="Next testimonial"
+                  >
+                    <FaChevronRight size={20} />
+                  </motion.button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </section>
